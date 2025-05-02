@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   app:
     image: php:8.2-fpm
@@ -16,8 +14,10 @@ services:
     command: >
       sh -c "apt-get update &&
              apt-get install -y libzip-dev zip unzip curl git libpng-dev libonig-dev libxml2-dev &&
+             curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer &&
              docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath gd &&
-             php artisan migrate &&
+             composer install --no-interaction --optimize-autoloader &&
+             php artisan migrate --force &&
              php artisan serve --host=0.0.0.0 --port=8000"
   mysql:
     image: mysql:8.0
